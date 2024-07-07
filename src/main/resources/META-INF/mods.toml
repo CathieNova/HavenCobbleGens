@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
+[[mods]]
+    modId="havencobblegens"
+    version="${mod_version}"
+    displayName="${mod_name}"
+    authors="${mod_authors}"
+    description='''${mod_description}'''
+    logoFile="logo.png"
+[[dependencies.havencobblegens]]
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.havencobblegens]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.havencobblegens]]
+    modId="jei"
+    mandatory=false
+    versionRange="[15.0.0.12,)"
+    ordering="NONE"
+    side="BOTH"
