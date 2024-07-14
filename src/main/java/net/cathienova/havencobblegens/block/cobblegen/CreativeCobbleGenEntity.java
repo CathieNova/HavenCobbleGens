@@ -97,7 +97,7 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
             if (stack.isEmpty() || stack.getItem() != Blocks.COBBLESTONE.asItem()) {
                 cobbleGenContents.setItem(0, new ItemStack(Blocks.COBBLESTONE));
             } else {
-                stack.grow(2);
+                stack.grow(4);
                 cobbleGenContents.setItem(0, stack);
             }
 
