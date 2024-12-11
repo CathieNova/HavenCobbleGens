@@ -5,12 +5,12 @@ import net.cathienova.havencobblegens.item.ModItems;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public class ModItemModelProvider extends ItemModelProvider {
+public class ModItemModelProvider extends ItemModelProvider
+{
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, HavenCobbleGens.MOD_ID, existingFileHelper);
     }
@@ -18,18 +18,12 @@ public class ModItemModelProvider extends ItemModelProvider {
     @Override
     protected void registerModels()
     {
-        simpleItem(ModItems.cobble_gen_upgrade_wooden);
-        simpleItem(ModItems.cobble_gen_upgrade_stone);
-        simpleItem(ModItems.cobble_gen_upgrade_iron);
-        simpleItem(ModItems.cobble_gen_upgrade_gold);
-        simpleItem(ModItems.cobble_gen_upgrade_diamond);
-        simpleItem(ModItems.cobble_gen_upgrade_emerald);
-        simpleItem(ModItems.cobble_gen_upgrade_netherite);
-    }
-
-    private ItemModelBuilder simpleItem(RegistryObject<Item> item) {
-        return withExistingParent(item.getId().getPath(),
-                new ResourceLocation("item/generated")).texture("layer0",
-                new ResourceLocation(HavenCobbleGens.MOD_ID,"item/" + item.getId().getPath()));
+        basicItem(ModItems.cobble_gen_upgrade_wooden.get());
+        basicItem(ModItems.cobble_gen_upgrade_stone.get());
+        basicItem(ModItems.cobble_gen_upgrade_iron.get());
+        basicItem(ModItems.cobble_gen_upgrade_gold.get());
+        basicItem(ModItems.cobble_gen_upgrade_diamond.get());
+        basicItem(ModItems.cobble_gen_upgrade_emerald.get());
+        basicItem(ModItems.cobble_gen_upgrade_netherite.get());
     }
 }

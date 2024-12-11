@@ -1,5 +1,6 @@
 package net.cathienova.havencobblegens.block.cobblegen;
 
+import com.mojang.serialization.MapCodec;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.minecraft.core.BlockPos;
@@ -7,15 +8,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -23,38 +22,36 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public class WoodenCobbleGen extends BaseEntityBlock {
-    public static final VoxelShape SHAPE = Block.box(0,0,0,16,16,16);
 
-    public WoodenCobbleGen() {
-        super(Properties.copy(Blocks.STONE).strength(2.0f));
+    public static final MapCodec<WoodenCobbleGen> CODEC = simpleCodec(WoodenCobbleGen::new);
+
+    public WoodenCobbleGen(Properties properties) {
+        super(properties);
     }
 
     @Override
-    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext)
+    protected MapCodec<? extends BaseEntityBlock> codec()
     {
-        return SHAPE;
+        return CODEC;
     }
 
     @Override
-    public RenderShape getRenderShape(BlockState pState)
-    {
+    public RenderShape getRenderShape(BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (world.isClientSide()) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = level.getBlockEntity(pos);
 
         if (tile instanceof WoodenCobbleGenEntity) {
             WoodenCobbleGenEntity cobblegen = (WoodenCobbleGenEntity) tile;
@@ -67,6 +64,11 @@ public class WoodenCobbleGen extends BaseEntityBlock {
                         player.drop(stack, false);
                     }
                 }
+            } else {
+                ItemStack stack = cobblegen.getInventory().getItem(0);
+                Component message = Component.translatable("Cobblestone x " + (stack.isEmpty() ? 0 : stack.getCount()));
+
+                player.sendSystemMessage(message);
             }
         }
 
@@ -103,11 +105,12 @@ public class WoodenCobbleGen extends BaseEntityBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.cobblegen_1", HavenConfig.wooden_cobble_gen_output));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag)
+    {
+        tooltip.add(Component.translatable("tooltip.cobblegen_1", HavenConfig.woodenCobbleGenOutput));
 
-        float cobblestonesPerSecond = 20.0f / (float) HavenConfig.wooden_cobble_gen_speed;
-        tooltip.add(Component.translatable("tooltip.cobblegen_2", String.format("%.2f", cobblestonesPerSecond)));
+        float cobblestonesPerSecond = 20.0f / (float) HavenConfig.woodenCobbleGenSpeed;
+        tooltip.add(Component.translatable("tooltip.cobblegen_2", String.format("%.2f", cobblestonesPerSecond * 2)));
         tooltip.add(Component.translatable("tooltip.cobblegen_3"));
         tooltip.add(Component.translatable("tooltip.cobblegen_4"));
     }

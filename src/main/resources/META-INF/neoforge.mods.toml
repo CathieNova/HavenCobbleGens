@@ -9,20 +9,19 @@ license="${mod_license}"
     description='''${mod_description}'''
     logoFile="logo.png"
 [[dependencies.havencobblegens]]
-    modId="forge"
-    mandatory=true
-    versionRange="${forge_version_range}"
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.havencobblegens]]
     modId="minecraft"
-    mandatory=true
+    type="required"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
 [[dependencies.havencobblegens]]
     modId="jei"
-    mandatory=false
     versionRange="[15.0.0.12,)"
     ordering="NONE"
     side="BOTH"

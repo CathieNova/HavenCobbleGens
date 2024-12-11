@@ -41,10 +41,9 @@ public class CobbleGenUpgradeWooden extends Item
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag tooltipFlag)
     {
-        super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
-
+        super.appendHoverText(stack, context, pTooltipComponents, tooltipFlag);
         pTooltipComponents.add(Component.translatable("item.havenksh.cobble_gen_upgrade_wooden.tooltip").withStyle(net.minecraft.ChatFormatting.GOLD));
     }
 }

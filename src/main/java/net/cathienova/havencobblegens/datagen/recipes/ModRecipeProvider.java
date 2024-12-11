@@ -3,25 +3,26 @@ package net.cathienova.havencobblegens.datagen.recipes;
 import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.cathienova.havencobblegens.block.ModBlocks;
 import net.cathienova.havencobblegens.item.ModItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.crafting.conditions.IConditionBuilder;
+import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider implements IConditionBuilder
 {
-    public ModRecipeProvider(PackOutput pOutput)
-    {
-        super(pOutput);
+    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, registries);
     }
 
     @Override
-    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> output)
+    protected void buildRecipes(RecipeOutput output)
     {
         BaseCobbleGenRecipe(output, ModBlocks.wooden_cobble_gen.get());
         UpgradeCobbleGenRecipe(output, ModBlocks.stone_cobble_gen.get(), Blocks.COBBLESTONE, ModBlocks.wooden_cobble_gen.get());
@@ -41,7 +42,7 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
         UpgradeCobbleGenRecipe(output, ModItems.cobble_gen_upgrade_netherite.get(), Items.NETHER_STAR, Items.GLASS);
     }
 
-    protected static void BaseCobbleGenRecipe(Consumer<FinishedRecipe> consumer, ItemLike result)
+    protected static void BaseCobbleGenRecipe(RecipeOutput recipe, ItemLike result)
     {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result, 1)
                 .pattern("III")
@@ -52,10 +53,10 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('L', Items.LAVA_BUCKET)
                 .define('W', Items.WATER_BUCKET)
                 .unlockedBy("has_" + getItemName(Blocks.OAK_LOG), has(Blocks.OAK_LOG))
-                .save(consumer, HavenCobbleGens.MOD_ID + ":craft/" + getItemName(result));
+                .save(recipe, HavenCobbleGens.MOD_ID + ":craft/" + getItemName(result));
     }
 
-    protected static void UpgradeCobbleGenRecipe(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike ingredient, ItemLike cobblegen)
+    protected static void UpgradeCobbleGenRecipe(RecipeOutput recipe, ItemLike result, ItemLike ingredient, ItemLike cobblegen)
     {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result, 1)
                 .pattern("III")
@@ -66,6 +67,6 @@ public class ModRecipeProvider extends RecipeProvider implements IConditionBuild
                 .define('W', Items.WATER_BUCKET)
                 .define('C', cobblegen)
                 .unlockedBy("has_" + getItemName(cobblegen), has(cobblegen))
-                .save(consumer, HavenCobbleGens.MOD_ID + ":craft/" + getItemName(result));
+                .save(recipe, HavenCobbleGens.MOD_ID + ":craft/" + getItemName(result));
     }
 }

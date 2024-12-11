@@ -16,7 +16,7 @@ public class ModTags
 
         private static TagKey<Block> tag(String name)
         {
-            return BlockTags.create(new ResourceLocation(HavenCobbleGens.MOD_ID, name));
+            return BlockTags.create(ResourceLocation.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
         }
     }
 
@@ -26,7 +26,7 @@ public class ModTags
         public static final TagKey<Item> cobbleGenUpgrades = tag("cobble_gen_upgrades");
         private static TagKey<Item> tag(String name)
         {
-            return ItemTags.create(new ResourceLocation(HavenCobbleGens.MOD_ID, name));
+            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
         }
     }
 }

@@ -1,14 +1,14 @@
 package net.cathienova.havencobblegens.block.cobblegen;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
-public class CobbleGenInventory
-{
-    private final ItemStackHandler inventory;
+public class CobbleGenInventory {
+    private final net.neoforged.neoforge.items.ItemStackHandler inventory;
     private final int stackSize;
 
     public static CobbleGenInventory createForTileEntity(int size, int stackSize) {
@@ -21,16 +21,32 @@ public class CobbleGenInventory
             public int getSlotLimit(int slot) {
                 return stackSize;
             }
+
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                if (stack.getCount() > stack.getMaxStackSize()) {
+                    stack.setCount(stack.getMaxStackSize());
+                }
+                super.setStackInSlot(slot, stack);
+            }
+
+            @Override
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+                if (stack.getCount() > stack.getMaxStackSize()) {
+                    stack.setCount(stack.getMaxStackSize());
+                }
+                return super.insertItem(slot, stack, simulate);
+            }
         };
         this.stackSize = stackSize;
     }
 
-    public CompoundTag serializeNBT() {
-        return inventory.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        return inventory.serializeNBT(provider);
     }
 
-    public void deserializeNBT(CompoundTag nbt) {
-        inventory.deserializeNBT(nbt);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        inventory.deserializeNBT(provider, nbt);
     }
 
     public ItemStackHandler getHandler() {
