@@ -9,7 +9,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -17,10 +16,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 public class WoodenCobbleGenEntity extends BlockEntity implements BlockEntityTicker<WoodenCobbleGenEntity> {
 
@@ -33,7 +33,7 @@ public class WoodenCobbleGenEntity extends BlockEntity implements BlockEntityTic
     }
 
     private void createInventory() {
-        cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.woodenCobbleGenOutput);
+        cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.wooden_cobble_gen_output);
     }
 
     private boolean canPlayerAccessInventory(Player player) {
@@ -66,34 +66,73 @@ public class WoodenCobbleGenEntity extends BlockEntity implements BlockEntityTic
     public void tick(Level level, BlockPos pos, BlockState state, WoodenCobbleGenEntity blockEntity) {
         if (level.isClientSide()) return;
 
-        if (cycle++ >= HavenConfig.woodenCobbleGenSpeed) {
+        if (cycle++ >= HavenConfig.wooden_cobble_gen_speed) {
             cycle = 0;
 
             Block blockToGenerate = getBlockToGenerate();
             ItemStack stack = cobbleGenContents.getItem(0);
             if (stack.isEmpty()) {
                 cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                this.setChanged();
             } else if (stack.getItem() == blockToGenerate.asItem()) {
-                int newSize = Math.min(stack.getCount() + 1, HavenConfig.diamondCobbleGenOutput);
+                int newSize = Math.min(stack.getCount() + 1, HavenConfig.wooden_cobble_gen_output);
                 stack.setCount(newSize);
                 cobbleGenContents.setItem(0, stack);
-            } else {
+                this.setChanged();
+            }
+
+            if (handleInsertion(level.getBlockEntity(pos.below()), pos.below())) {
+                this.setChanged();
                 return;
             }
-
-            BlockEntity tileAbove = level.getBlockEntity(pos.above());
-            if (tileAbove instanceof BlockEntityTicker<?> ticker) {
-                for (int slot = 0; slot < cobbleGenContents.getContainerSize(); slot++) {
-                    ItemStack singleItemStack = cobbleGenContents.removeItem(slot, 1);
-                    if (!singleItemStack.isEmpty()) {
-                        cobbleGenContents.setItem(slot, singleItemStack);
-                        break;
-                    }
-                }
+            if (handleInsertion(level.getBlockEntity(pos.above()), pos.above())) {
+                this.setChanged();
+                return;
             }
-
             this.setChanged();
         }
+    }
+
+    private boolean handleInsertion(BlockEntity tile, BlockPos pos) {
+        if (tile != null) {
+            assert level != null;
+            IItemHandler cap = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+            if (cap != null && isCapAvailable(cap)) {
+                insertItemToContainer(cap);
+                this.setChanged();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isCapAvailable(IItemHandler cap) {
+        for (int slot = 0; slot < cap.getSlots(); slot++) {
+            ItemStack targetStack = cap.getStackInSlot(slot);
+            if (targetStack.isEmpty() || (targetStack.getItem() == cobbleGenContents.getItem(0).getItem() && targetStack.getCount() < targetStack.getMaxStackSize())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void insertItemToContainer(IItemHandler cap) {
+        for (int slot = 0; slot < cap.getSlots(); slot++) {
+            ItemStack singleItemStack = cobbleGenContents.getItem(0);
+            if (singleItemStack.isEmpty()) {
+                break;
+            }
+
+            ItemStack targetStack = cap.getStackInSlot(slot);
+            if (targetStack.isEmpty() || (targetStack.getItem() == singleItemStack.getItem() && targetStack.getCount() < targetStack.getMaxStackSize())) {
+                ItemStack remainingStack = cap.insertItem(slot, singleItemStack, false);
+                cobbleGenContents.setItem(0, remainingStack);
+                if (remainingStack.isEmpty()) {
+                    break;
+                }
+            }
+        }
+        this.setChanged();
     }
 
     public CobbleGenInventory getInventory() {
@@ -101,10 +140,10 @@ public class WoodenCobbleGenEntity extends BlockEntity implements BlockEntityTic
     }
 
     public int getMaxStackSize() {
-        return HavenConfig.woodenCobbleGenOutput;
+        return HavenConfig.wooden_cobble_gen_output;
     }
 
-    private Block getBlockToGenerate() {
+    public Block getBlockToGenerate() {
         List<? extends String> validBlocks = HavenConfig.cobbleGenValidBlocks;
         Random random = new Random();
 

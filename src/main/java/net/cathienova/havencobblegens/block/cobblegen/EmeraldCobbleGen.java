@@ -5,16 +5,16 @@ import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -100,16 +100,17 @@ public class EmeraldCobbleGen extends BaseEntityBlock {
             return null;
         }
 
-        return createTickerHelper(type, ModBlockEntities.emerald_cobble_gen_tile.get(),
+        return createTickerHelper(type, ModBlockEntities
+                        .emerald_cobble_gen_tile.get(),
                 (pLevel1, pPos, pState1, pBlockEntity) -> pBlockEntity.tick(pLevel1, pPos, pState1, pBlockEntity));
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag)
     {
-        tooltip.add(Component.translatable("tooltip.cobblegen_1", HavenConfig.emeraldCobbleGenOutput));
+        tooltip.add(Component.translatable("tooltip.cobblegen_1", HavenConfig.emerald_cobble_gen_output));
 
-        float cobblestonesPerSecond = 20.0f / (float) HavenConfig.emeraldCobbleGenSpeed;
+        float cobblestonesPerSecond = 20.0f / (float) HavenConfig.emerald_cobble_gen_speed;
         tooltip.add(Component.translatable("tooltip.cobblegen_2", String.format("%.2f", cobblestonesPerSecond * 2)));
         tooltip.add(Component.translatable("tooltip.cobblegen_3"));
         tooltip.add(Component.translatable("tooltip.cobblegen_4"));

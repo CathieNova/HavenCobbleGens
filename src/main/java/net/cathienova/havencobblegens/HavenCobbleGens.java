@@ -3,6 +3,7 @@ package net.cathienova.havencobblegens;
 import com.mojang.logging.LogUtils;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.block.ModBlocks;
+import net.cathienova.havencobblegens.config.CommonConfig;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.cathienova.havencobblegens.item.*;
 import net.neoforged.api.distmarker.Dist;
@@ -14,8 +15,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Mod(HavenCobbleGens.MOD_ID)
 public class HavenCobbleGens
@@ -23,14 +26,22 @@ public class HavenCobbleGens
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "havencobblegens";
     public static final String MOD_NAME = "HavenCobbleGenerators";
+    static final ModConfigSpec commonSpec;
+    public static final CommonConfig c_config;
+
+    static
+    {
+        final Pair<CommonConfig, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(CommonConfig::new);
+        commonSpec = specPair.getRight();
+        c_config = specPair.getLeft();
+    }
 
 
     public HavenCobbleGens(IEventBus modEventBus, ModContainer modContainer)
     {
         modEventBus.addListener(this::commonSetup);
-        modContainer.registerConfig(ModConfig.Type.COMMON, HavenConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, commonSpec);
 
-        modEventBus.addListener(this::commonSetup);
         NeoForge.EVENT_BUS.register(this);
         ModBlocks.register(modEventBus);
         ModItems.register(modEventBus);

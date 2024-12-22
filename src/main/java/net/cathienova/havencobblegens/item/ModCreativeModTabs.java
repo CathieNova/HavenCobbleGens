@@ -16,7 +16,7 @@ public class ModCreativeModTabs
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, HavenCobbleGens.MOD_ID);
 
-    public static String HavenCobbleGens_tab_title = "itemgroup.havenksh.havencobblegens_tab";
+    public static String HavenCobbleGens_tab_title = "itemgroup.havencobblegens.havencobblegens_tab";
     public static final Supplier<CreativeModeTab> Haven_TAB = CREATIVE_MODE_TABS.register("havencobblegens_tab",
             () -> CreativeModeTab.builder().icon(() -> new ItemStack(ModBlocks.creative_cobble_gen.get()))
                     .title(Component.translatable(HavenCobbleGens_tab_title))

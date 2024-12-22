@@ -1,10 +1,12 @@
 package net.cathienova.havencobblegens.block.cobblegen;
 
+import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +22,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityTicker<CreativeCobbleGenEntity> {
@@ -34,7 +35,7 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
     }
 
     private void createInventory() {
-        cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.creativeCobbleGenOutput);
+        cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.creative_cobble_gen_output);
     }
 
     private boolean canPlayerAccessInventory(Player player) {
@@ -67,34 +68,28 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
     public void tick(Level level, BlockPos pos, BlockState state, CreativeCobbleGenEntity blockEntity) {
         if (level.isClientSide()) return;
 
-        if (cycle++ >= HavenConfig.creativeCobbleGenSpeed) {
+        if (cycle++ >= HavenConfig.creative_cobble_gen_speed) {
             cycle = 0;
 
             Block blockToGenerate = getBlockToGenerate();
             ItemStack stack = cobbleGenContents.getItem(0);
             if (stack.isEmpty()) {
                 cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                this.setChanged();
             } else if (stack.getItem() == blockToGenerate.asItem()) {
-                int newSize = Math.min(stack.getCount() + 1, HavenConfig.diamondCobbleGenOutput);
-                stack.setCount(newSize);
+                int newSize = Math.min(stack.getCount(), HavenConfig.creative_cobble_gen_output);
+                stack.setCount(newSize * HavenConfig.creative_cobble_gen_multiplier);
                 cobbleGenContents.setItem(0, stack);
-            } else {
-                return;
+                this.setChanged();
             }
 
             if (handleInsertion(level.getBlockEntity(pos.below()), pos.below())) {
+                this.setChanged();
                 return;
             }
             if (handleInsertion(level.getBlockEntity(pos.above()), pos.above())) {
+                this.setChanged();
                 return;
-            }
-
-            for (int slot = 0; slot < cobbleGenContents.getContainerSize(); slot++) {
-                ItemStack singleItemStack = cobbleGenContents.removeItem(slot, 1);
-                if (!singleItemStack.isEmpty()) {
-                    cobbleGenContents.setItem(slot, singleItemStack);
-                    break;
-                }
             }
             this.setChanged();
         }
@@ -147,10 +142,10 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
     }
 
     public int getMaxStackSize() {
-        return HavenConfig.creativeCobbleGenOutput;
+        return HavenConfig.creative_cobble_gen_output;
     }
 
-    private Block getBlockToGenerate() {
+    public Block getBlockToGenerate() {
         List<? extends String> validBlocks = HavenConfig.cobbleGenValidBlocks;
         Random random = new Random();
 

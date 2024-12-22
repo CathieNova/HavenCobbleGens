@@ -44,6 +44,6 @@ public class CobbleGenUpgradeDiamond extends Item
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag tooltipFlag)
     {
         super.appendHoverText(stack, context, pTooltipComponents, tooltipFlag);
-        pTooltipComponents.add(Component.translatable("item.havenksh.cobble_gen_upgrade_diamond.tooltip").withStyle(net.minecraft.ChatFormatting.GOLD));
+        pTooltipComponents.add(Component.translatable("item.havencobblegens.cobble_gen_upgrade_diamond.tooltip").withStyle(net.minecraft.ChatFormatting.GOLD));
     }
 }

@@ -26,6 +26,11 @@ public class ModEngLangProvider extends LanguageProvider
         add("jei.havencobblegens.cobble_gen.desc.line1", "Cobble Generators is a stable source of Cobblestone for your needs. The higher the tier, the faster it generates Cobblestone.");
         add("jei.havencobblegens.cobble_gen.desc.line2", "It automatically outputs to an inventory above and manually to a hopper below.");
 
+        add("tooltip.cobblegen.amount", "Cobblestone: %d / %d");
+        add("tooltip.cobblegen.full", "Cobblestone Generator is Full: %d");
+        add("tooltip.cobblegen.generating", "Generating %d");
+        add("config.jade.plugin_havencobblegens.cobblegen_data", "Cobblestone Generator Info");
+
         add(ModBlocks.wooden_cobble_gen.get(), "Wooden Cobblestone Generator");
         add(ModBlocks.stone_cobble_gen.get(), "Stone Cobblestone Generator");
         add(ModBlocks.iron_cobble_gen.get(), "Iron Cobblestone Generator");
@@ -36,25 +41,25 @@ public class ModEngLangProvider extends LanguageProvider
         add(ModBlocks.creative_cobble_gen.get(), "Creative Cobblestone Generator");
 
         add(ModItems.cobble_gen_upgrade_wooden.get(), "Wooden Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_wooden.tooltip", "§bCrouch+Right Click§r to upgrade a §2Wooden§r to §5Stone§r");
+        add("item.havencobblegens.cobble_gen_upgrade_wooden.tooltip", "§bCrouch+Right Click§r to upgrade a §2Wooden§r to §5Stone§r");
 
         add(ModItems.cobble_gen_upgrade_stone.get(), "Stone Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_stone.tooltip", "§bCrouch+Right Click§r to upgrade a §2Stone§r to §5Iron§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_stone.tooltip", "§bCrouch+Right Click§r to upgrade a §2Stone§r to §5Iron§r.");
 
         add(ModItems.cobble_gen_upgrade_iron.get(), "Iron Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_iron.tooltip", "§bCrouch+Right Click§r to upgrade a §2Iron§r to §5Gold§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_iron.tooltip", "§bCrouch+Right Click§r to upgrade a §2Iron§r to §5Gold§r.");
 
         add(ModItems.cobble_gen_upgrade_gold.get(), "Gold Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_gold.tooltip", "§bCrouch+Right Click§r to upgrade a §2Gold§r to §5Diamond§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_gold.tooltip", "§bCrouch+Right Click§r to upgrade a §2Gold§r to §5Diamond§r.");
 
         add(ModItems.cobble_gen_upgrade_diamond.get(), "Diamond Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_diamond.tooltip", "§bCrouch+Right Click§r to upgrade a §2Diamond§r to §5Emerald§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_diamond.tooltip", "§bCrouch+Right Click§r to upgrade a §2Diamond§r to §5Emerald§r.");
 
         add(ModItems.cobble_gen_upgrade_emerald.get(), "Emerald Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_emerald.tooltip", "§bCrouch+Right Click§r to upgrade a §2Emerald§r to §5Netherite§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_emerald.tooltip", "§bCrouch+Right Click§r to upgrade a §2Emerald§r to §5Netherite§r.");
 
         add(ModItems.cobble_gen_upgrade_netherite.get(), "Netherite Cobblestone Generator Upgrade");
-        add("item.havenksh.cobble_gen_upgrade_netherite.tooltip", "§bCrouch+Right Click§r to upgrade a §2Netherite§r to §5Creative§r.");
+        add("item.havencobblegens.cobble_gen_upgrade_netherite.tooltip", "§bCrouch+Right Click§r to upgrade a §2Netherite§r to §5Creative§r.");
 
         add("advancements.havencobblegens.root.title", "Haven: Cobble Generators");
         add("advancements.havencobblegens.root.description", "Automate cobblestones so you can finally stop mining... forever!");

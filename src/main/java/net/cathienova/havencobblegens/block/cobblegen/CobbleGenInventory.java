@@ -8,7 +8,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class CobbleGenInventory {
-    private final net.neoforged.neoforge.items.ItemStackHandler inventory;
+    private final ItemStackHandler inventory;
     private final int stackSize;
 
     public static CobbleGenInventory createForTileEntity(int size, int stackSize) {
