@@ -26,11 +26,21 @@ public class CobbleGenInventory
     }
 
     public CompoundTag serializeNBT() {
-        return inventory.serializeNBT();
+        CompoundTag tag = new CompoundTag();
+        CompoundTag itemsTag = inventory.serializeNBT();
+        tag.put("Items", itemsTag);
+        tag.putInt("TotalCount", inventory.getStackInSlot(0).getCount());
+        return tag;
     }
 
     public void deserializeNBT(CompoundTag nbt) {
-        inventory.deserializeNBT(nbt);
+        inventory.deserializeNBT(nbt.getCompound("Items"));
+        int totalCount = nbt.getInt("TotalCount");
+        if (totalCount > 0) {
+            ItemStack stack = inventory.getStackInSlot(0);
+            stack.setCount(totalCount);
+            inventory.setStackInSlot(0, stack);
+        }
     }
 
     public ItemStackHandler getHandler() {
@@ -78,9 +88,13 @@ public class CobbleGenInventory
 
     public void dropInventory(Level world, BlockPos pos) {
         for (int i = 0; i < this.getContainerSize(); ++i) {
-            ItemStack stack = removeItem(i, this.getMaxStackSize());
+            ItemStack stack = this.getItem(i);
             if (!stack.isEmpty()) {
-                world.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), stack));
+                while (!stack.isEmpty()) {
+                    int dropAmount = Math.min(stack.getCount(), 64);
+                    ItemStack dropStack = stack.split(dropAmount);
+                    world.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), dropStack));
+                }
             }
         }
     }
