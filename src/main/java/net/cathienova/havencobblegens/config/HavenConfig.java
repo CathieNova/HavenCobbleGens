@@ -3,8 +3,11 @@ package net.cathienova.havencobblegens.config;
 import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.minecraftforge.fml.config.ModConfig;
 
+import java.util.List;
+
 public class HavenConfig
 {
+    public static List<? extends String> cobbleGenValidBlocks;
     public static int wooden_cobble_gen_speed;
     public static int wooden_cobble_gen_output;
     public static int stone_cobble_gen_speed;
@@ -21,8 +24,10 @@ public class HavenConfig
     public static int netherite_cobble_gen_output;
     public static int creative_cobble_gen_speed;
     public static int creative_cobble_gen_output;
+    public static int creative_cobble_gen_yield;
 
     public static void bake(ModConfig config) {
+        cobbleGenValidBlocks = HavenCobbleGens.c_config.cobbleGenValidBlocks.get();
         wooden_cobble_gen_speed = HavenCobbleGens.c_config.wooden_cobble_gen_speed.get();
         wooden_cobble_gen_output = HavenCobbleGens.c_config.wooden_cobble_gen_output.get();
         stone_cobble_gen_speed = HavenCobbleGens.c_config.stone_cobble_gen_speed.get();
@@ -39,5 +44,6 @@ public class HavenConfig
         netherite_cobble_gen_output = HavenCobbleGens.c_config.netherite_cobble_gen_output.get();
         creative_cobble_gen_speed = HavenCobbleGens.c_config.creative_cobble_gen_speed.get();
         creative_cobble_gen_output = HavenCobbleGens.c_config.creative_cobble_gen_output.get();
+        creative_cobble_gen_yield = HavenCobbleGens.c_config.creative_cobble_gen_yield.get();
     }
 }

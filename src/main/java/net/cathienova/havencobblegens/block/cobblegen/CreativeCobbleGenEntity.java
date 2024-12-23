@@ -2,6 +2,7 @@ package net.cathienova.havencobblegens.block.cobblegen;
 
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
+import net.cathienova.havencobblegens.util.CobbleGenHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -10,7 +11,7 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,7 +39,7 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
     }
 
     private void createInventory() {
-        cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.creative_cobble_gen_output);
+        this.cobbleGenContents = CobbleGenInventory.createForTileEntity(1, HavenConfig.creative_cobble_gen_output);
     }
 
     private boolean canPlayerAccessInventory(Player player) {
@@ -50,16 +51,23 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        if (this.cobbleGenContents == null) this.createInventory();
+        if (this.cobbleGenContents == null) {
+            this.createInventory();
+        }
+
         if (tag.contains("inventory")) {
             this.cobbleGenContents.deserializeNBT(tag.getCompound("inventory"));
         }
+        this.setChanged();
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.put("inventory", this.cobbleGenContents.serializeNBT());
+
+        if (this.cobbleGenContents != null) {
+            tag.put("inventory", this.cobbleGenContents.serializeNBT());
+        }
     }
 
     @Nullable
@@ -93,19 +101,22 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
         if (cycle++ >= HavenConfig.creative_cobble_gen_speed) {
             cycle = 0;
 
+            Block blockToGenerate = CobbleGenHelper.getBlockToGenerate(this.level, this.worldPosition);
             ItemStack stack = cobbleGenContents.getItem(0);
-            if (stack.isEmpty() || stack.getItem() != Blocks.COBBLESTONE.asItem()) {
-                cobbleGenContents.setItem(0, new ItemStack(Blocks.COBBLESTONE));
-            } else {
-                stack.grow(4);
+            if (stack.isEmpty()) {
+                cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                this.setChanged();
+            } else if (stack.getItem() == blockToGenerate.asItem() && stack.getCount() < HavenConfig.creative_cobble_gen_output) {
+                stack.grow(HavenConfig.creative_cobble_gen_yield);
                 cobbleGenContents.setItem(0, stack);
+                this.setChanged();
             }
 
             BlockEntity tileAbove = level.getBlockEntity(pos.above());
             if (tileAbove != null) {
                 tileAbove.getCapability(ForgeCapabilities.ITEM_HANDLER, Direction.DOWN).ifPresent(handler -> {
                     for (int slot = 0; slot < handler.getSlots(); slot++) {
-                        ItemStack singleItemStack = cobbleGenContents.removeItem(0, 1);
+                        ItemStack singleItemStack = cobbleGenContents.removeItem(0, 2);
                         if (!singleItemStack.isEmpty()) {
                             ItemStack leftoverStack = handler.insertItem(slot, singleItemStack, false);
                             if (!leftoverStack.isEmpty()) {
