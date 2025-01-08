@@ -1,5 +1,6 @@
 package net.cathienova.havencobblegens.block.cobblegen;
 
+import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.cathienova.havencobblegens.util.CobbleGenHelper;
@@ -9,15 +10,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityTicker<CreativeCobbleGenEntity> {
@@ -101,10 +105,20 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
         if (cycle++ >= HavenConfig.creative_cobble_gen_speed) {
             cycle = 0;
 
+            // ADD THIS CODE TO THE OTHER ENTITIES AS WELL
+
             Block blockToGenerate = CobbleGenHelper.getBlockToGenerate(this.level, this.worldPosition);
+            Item itemToGenerate = CobbleGenHelper.getItemToGenerate(this.level, this.worldPosition);
             ItemStack stack = cobbleGenContents.getItem(0);
             if (stack.isEmpty()) {
-                cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                if (blockToGenerate != Blocks.AIR)
+                {
+                    cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                }
+                else if (itemToGenerate != null)
+                {
+                    cobbleGenContents.setItem(0, new ItemStack(itemToGenerate));
+                }
                 this.setChanged();
             } else if (stack.getItem() == blockToGenerate.asItem() && stack.getCount() < HavenConfig.creative_cobble_gen_output) {
                 stack.grow(HavenConfig.creative_cobble_gen_yield);

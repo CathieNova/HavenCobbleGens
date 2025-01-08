@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -104,9 +105,17 @@ public class StoneCobbleGenEntity extends BlockEntity implements BlockEntityTick
             cycle = 0;
 
             Block blockToGenerate = CobbleGenHelper.getBlockToGenerate(this.level, this.worldPosition);
+            Item itemToGenerate = CobbleGenHelper.getItemToGenerate(this.level, this.worldPosition);
             ItemStack stack = cobbleGenContents.getItem(0);
             if (stack.isEmpty()) {
-                cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                if (blockToGenerate != Blocks.AIR)
+                {
+                    cobbleGenContents.setItem(0, new ItemStack(blockToGenerate));
+                }
+                else if (itemToGenerate != null)
+                {
+                    cobbleGenContents.setItem(0, new ItemStack(itemToGenerate));
+                }
                 this.setChanged();
             } else if (stack.getItem() == blockToGenerate.asItem() && stack.getCount() < HavenConfig.stone_cobble_gen_output) {
                 stack.grow(1);
