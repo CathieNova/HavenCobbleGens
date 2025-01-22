@@ -109,7 +109,7 @@ public class CreativeCobbleGen extends BaseEntityBlock {
     {
         tooltip.add(Component.translatable("tooltip.cobblegen_1", HavenConfig.creative_cobble_gen_output));
 
-        float cobblestonesPerSecond = (20.0f / (float) HavenConfig.creative_cobble_gen_speed) * HavenConfig.creative_cobble_gen_multiplier;
+        float cobblestonesPerSecond = 20.0f / (float) HavenConfig.creative_cobble_gen_speed;
         tooltip.add(Component.translatable("tooltip.cobblegen_2", String.format("%.2f", cobblestonesPerSecond)));
         tooltip.add(Component.translatable("tooltip.cobblegen_3"));
         tooltip.add(Component.translatable("tooltip.cobblegen_4"));
