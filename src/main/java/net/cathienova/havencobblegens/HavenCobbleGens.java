@@ -5,7 +5,6 @@ import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.block.ModBlocks;
 import net.cathienova.havencobblegens.compat.REIHavenCobbleGenPlugin;
 import net.cathienova.havencobblegens.config.CommonConfig;
-import net.cathienova.havencobblegens.config.HavenConfig;
 import net.cathienova.havencobblegens.item.*;
 import net.cathienova.havencobblegens.util.ModVillagers;
 import net.neoforged.api.distmarker.Dist;
