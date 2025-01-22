@@ -26,6 +26,9 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+
+    maven { url "https://maven.architectury.dev/" }
+    maven { url "https://maven.shedaniel.me/" }
 }
 
 base {
@@ -88,8 +91,12 @@ dependencies {
     // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     implementation "curse.maven:jade-324717:${jade_version}"
+    api "me.shedaniel.cloth:cloth-config-neoforge:15.0.140"
+    api "me.shedaniel:RoughlyEnoughItems-neoforge:16.0.788"
+    api "dev.architectury:architectury-neoforge:13.0.8"
+
 }
 
 tasks.withType(ProcessResources).configureEach {

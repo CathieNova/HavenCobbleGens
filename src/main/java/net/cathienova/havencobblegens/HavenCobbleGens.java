@@ -3,13 +3,16 @@ package net.cathienova.havencobblegens;
 import com.mojang.logging.LogUtils;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.block.ModBlocks;
+import net.cathienova.havencobblegens.compat.REIHavenCobbleGenPlugin;
 import net.cathienova.havencobblegens.config.CommonConfig;
 import net.cathienova.havencobblegens.config.HavenConfig;
 import net.cathienova.havencobblegens.item.*;
+import net.cathienova.havencobblegens.util.ModVillagers;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
@@ -37,16 +40,17 @@ public class HavenCobbleGens
     }
 
 
-    public HavenCobbleGens(IEventBus modEventBus, ModContainer modContainer)
+    public HavenCobbleGens(IEventBus bus, ModContainer modContainer)
     {
-        modEventBus.addListener(this::commonSetup);
+        bus.addListener(this::commonSetup);
         modContainer.registerConfig(ModConfig.Type.COMMON, commonSpec);
 
         NeoForge.EVENT_BUS.register(this);
-        ModBlocks.register(modEventBus);
-        ModItems.register(modEventBus);
-        ModBlockEntities.register(modEventBus);
-        ModCreativeModTabs.register(modEventBus);
+        ModBlocks.register(bus);
+        ModItems.register(bus);
+        ModVillagers.register(bus);
+        ModBlockEntities.register(bus);
+        ModCreativeModTabs.register(bus);
     }
 
     public static void Log(String message)
@@ -56,7 +60,8 @@ public class HavenCobbleGens
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-
+        if (ModList.get().isLoaded("roughlyenoughitems"))
+            REIHavenCobbleGenPlugin.populateItemDescriptions();
     }
 
     @SubscribeEvent

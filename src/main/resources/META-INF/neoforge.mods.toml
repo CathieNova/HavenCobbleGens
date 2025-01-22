@@ -22,10 +22,17 @@ license="${mod_license}"
     side="BOTH"
 [[dependencies.havencobblegens]]
     modId="jei"
+    type="optional"
     versionRange="[19.19,)"
     ordering="NONE"
     side="BOTH"
-[[dependencies.havenksh]]
+[[dependencies.havencobblegens]]
+    modId="roughlyenoughitems"
+    type="optional"
+    versionRange="[16.0.788,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.havencobblegens]]
     modId="jade"
     versionRange="[11.7.0,)"
     ordering="NONE"
