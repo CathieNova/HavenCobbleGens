@@ -18,18 +18,6 @@ public class ModEngLangProvider extends LanguageProvider
     protected void addTranslations()
     {
         add(ModCreativeModTabs.HavenCobbleGens_tab_title, "§5Haven: §7Cobble Generators");
-        add("tooltip.cobblegen_1", "§7Holds §6%d §7Blocks!");
-        add("tooltip.cobblegen_2", "§7Generates §6%.2f §7Cobblestone per second!");
-        add("tooltip.cobblegen_3", "§7Outputs to an Inventory Above!");
-        add("tooltip.cobblegen_4", "§7Outputs to Hopper Below!");
-
-        add("jei.havencobblegens.cobble_gen.desc.line1", "Cobble Generators is a stable source of Cobblestone for your needs. The higher the tier, the faster it generates Cobblestone.");
-        add("jei.havencobblegens.cobble_gen.desc.line2", "It automatically outputs to an inventory above and manually to a hopper below.");
-
-        add("tooltip.cobblegen.amount", "Cobblestone: %d / %d");
-        add("tooltip.cobblegen.full", "Cobblestone Generator is Full: %d");
-        add("tooltip.cobblegen.generating", "Generating %d");
-        add("config.jade.plugin_havencobblegens.cobblegen_data", "Cobblestone Generator Info");
 
         add(ModBlocks.wooden_cobble_gen.get(), "Wooden Cobblestone Generator");
         add(ModBlocks.stone_cobble_gen.get(), "Stone Cobblestone Generator");
@@ -60,6 +48,23 @@ public class ModEngLangProvider extends LanguageProvider
 
         add(ModItems.cobble_gen_upgrade_netherite.get(), "Netherite Cobblestone Generator Upgrade");
         add("item.havencobblegens.cobble_gen_upgrade_netherite.tooltip", "§bCrouch+Right Click§r to upgrade a §2Netherite§r to §5Creative§r.");
+
+        add("rei.category.havencobblegens.item_info", "REI Information");
+        add("tooltip.cobblegen_1", "§7Holds §6%d §7Blocks!");
+        add("tooltip.cobblegen_2", "§7Generates §6%.2f §7Cobblestone per second!");
+        add("tooltip.cobblegen_3", "§7Outputs to an Inventory Above!");
+        add("tooltip.cobblegen_4", "§7Outputs to Hopper Below!");
+
+        add("tooltip.cobblegen.amount", "Cobblestone: %d / %d");
+        add("tooltip.cobblegen.full", "Cobblestone Generator is Full: %d");
+        add("tooltip.cobblegen.generating", "Generating %d");
+
+        add("entity.minecraft.villager.havencobblegens.cobblemaster", "Cobble Master");
+
+        add("config.jade.plugin_havencobblegens.cobblegen_data", "Cobblestone Generator Info");
+
+        add("jei.havencobblegens.cobble_gen.desc.line1", "Cobble Generators is a stable source of Cobblestone for your needs. The higher the tier, the faster it generates Cobblestone.");
+        add("jei.havencobblegens.cobble_gen.desc.line2", "It automatically outputs to an inventory above and manually to a hopper below.");
 
         add("advancements.havencobblegens.root.title", "Haven: Cobble Generators");
         add("advancements.havencobblegens.root.description", "Automate cobblestones so you can finally stop mining... forever!");
