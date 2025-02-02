@@ -3,7 +3,6 @@ package net.cathienova.havencobblegens.block.cobblegen;
 import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.config.HavenConfig;
-import net.cathienova.havencobblegens.util.CobbleGenHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -107,8 +106,8 @@ public class CreativeCobbleGenEntity extends BlockEntity implements BlockEntityT
 
             // ADD THIS CODE TO THE OTHER ENTITIES AS WELL
 
-            Block blockToGenerate = CobbleGenHelper.getBlockToGenerate(this.level, this.worldPosition);
-            Item itemToGenerate = CobbleGenHelper.getItemToGenerate(this.level, this.worldPosition);
+            Block blockToGenerate = cobbleGenContents.getBlockToGenerate(this.level, this.worldPosition);
+            Item itemToGenerate = cobbleGenContents.getItemToGenerate(this.level, this.worldPosition);
             ItemStack stack = cobbleGenContents.getItem(0);
             if (stack.isEmpty()) {
                 if (blockToGenerate != Blocks.AIR)
