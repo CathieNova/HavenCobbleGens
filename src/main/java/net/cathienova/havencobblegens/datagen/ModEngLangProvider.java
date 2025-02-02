@@ -23,8 +23,12 @@ public class ModEngLangProvider extends LanguageProvider
         add("tooltip.cobblegen_3", "§7Outputs to an Inventory Above!");
         add("tooltip.cobblegen_4", "§7Outputs to Hopper Below!");
 
-        add("jei.havencobblegens.cobble_gen.desc.line1", "Cobble Generators is a stable source of Cobblestone for your needs. The higher the tier, the faster it generates Cobblestone.");
+        add("jei.havencobblegens.cobble_gen.desc.line1", "Cobble Generators is a stable source of items for your needs. The higher the tier, the faster it generates.");
         add("jei.havencobblegens.cobble_gen.desc.line2", "It automatically outputs to an inventory above and manually to a hopper below.");
+        add("jei.havencobblegens.cobblegen.title", "Cobblestone Generator Outputs");
+        add("jei.havencobblegens.cobblegen.input", "§6>> §2Block placed on any side except Top/Bottom §6<<");
+        add("jei.havencobblegens.cobblegen.catalyst", "§6>> §2Main Generator §6<<");
+        add("jei.havencobblegens.cobblegen.output", "§6>> §2Output §6<<");
 
         add(ModBlocks.wooden_cobble_gen.get(), "Wooden Cobblestone Generator");
         add(ModBlocks.stone_cobble_gen.get(), "Stone Cobblestone Generator");
