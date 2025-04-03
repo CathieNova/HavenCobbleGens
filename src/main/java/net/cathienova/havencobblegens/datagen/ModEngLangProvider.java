@@ -55,8 +55,8 @@ public class ModEngLangProvider extends LanguageProvider
         add("tooltip.cobblegen_3", "§7Outputs to an Inventory Above!");
         add("tooltip.cobblegen_4", "§7Outputs to Hopper Below!");
 
-        add("tooltip.cobblegen.amount", "Cobblestone: %d / %d");
-        add("tooltip.cobblegen.full", "Cobblestone Generator is Full: %d");
+        add("tooltip.cobblegen.amount", "%d / %d");
+        add("tooltip.cobblegen.full", "Generator is Full: %d");
         add("tooltip.cobblegen.generating", "Generating %d");
 
         add("entity.minecraft.villager.havencobblegens.cobblemaster", "Cobble Master");

@@ -100,9 +100,12 @@ public class NetheriteCobbleGenEntity extends BlockEntity implements BlockEntity
     }
 
     private boolean isCapAvailable(IItemHandler cap) {
+        ItemStack toInsert = cobbleGenContents.getItem(0);
+        if (toInsert.isEmpty()) return false;
+
         for (int slot = 0; slot < cap.getSlots(); slot++) {
-            ItemStack targetStack = cap.getStackInSlot(slot);
-            if (targetStack.isEmpty() || (targetStack.getItem() == cobbleGenContents.getItem(0).getItem() && targetStack.getCount() < targetStack.getMaxStackSize())) {
+            ItemStack remaining = cap.insertItem(slot, toInsert.copy(), true);
+            if (remaining.getCount() < toInsert.getCount()) {
                 return true;
             }
         }
@@ -110,22 +113,17 @@ public class NetheriteCobbleGenEntity extends BlockEntity implements BlockEntity
     }
 
     private void insertItemToContainer(IItemHandler cap) {
+        ItemStack toInsert = cobbleGenContents.getItem(0);
+        if (toInsert.isEmpty()) return;
+
         for (int slot = 0; slot < cap.getSlots(); slot++) {
-            ItemStack singleItemStack = cobbleGenContents.getItem(0);
-            if (singleItemStack.isEmpty()) {
+            ItemStack remaining = cap.insertItem(slot, toInsert.copy(), false);
+            if (remaining.getCount() != toInsert.getCount()) {
+                cobbleGenContents.setItem(0, remaining);
+                this.setChanged();
                 break;
             }
-
-            ItemStack targetStack = cap.getStackInSlot(slot);
-            if (targetStack.isEmpty() || (targetStack.getItem() == singleItemStack.getItem() && targetStack.getCount() < targetStack.getMaxStackSize())) {
-                ItemStack remainingStack = cap.insertItem(slot, singleItemStack, false);
-                cobbleGenContents.setItem(0, remainingStack);
-                if (remainingStack.isEmpty()) {
-                    break;
-                }
-            }
         }
-        this.setChanged();
     }
 
     public CobbleGenInventory getInventory() {

@@ -97,6 +97,9 @@ dependencies {
     api "me.shedaniel:RoughlyEnoughItems-neoforge:16.0.788"
     api "dev.architectury:architectury-neoforge:13.0.8"
 
+    // For testing modded storage
+    //implementation "curse.maven:titanium-287342:6337206"
+    //implementation "curse.maven:functional-storage-556861:6189752"
 }
 
 tasks.withType(ProcessResources).configureEach {
