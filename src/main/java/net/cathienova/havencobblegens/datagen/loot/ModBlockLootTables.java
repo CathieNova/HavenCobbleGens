@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.Set;
 
 public class ModBlockLootTables extends BlockLootSubProvider {
-    protected ModBlockLootTables(HolderLookup.Provider registries) {
+    public ModBlockLootTables(HolderLookup.Provider registries) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
 

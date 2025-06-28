@@ -45,6 +45,8 @@ public class CreativeCobbleGen extends BaseEntityBlock {
         return RenderShape.MODEL;
     }
 
+
+
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.isClientSide()) {

@@ -33,6 +33,7 @@ public class ModBlockTagGenerator extends BlockTagsProvider
             ;
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)
+                .add(ModBlocks.wooden_cobble_gen.get())
                 .add(ModBlocks.stone_cobble_gen.get())
             ;
 
@@ -44,9 +45,6 @@ public class ModBlockTagGenerator extends BlockTagsProvider
         this.tag(BlockTags.NEEDS_DIAMOND_TOOL)
                 .add(ModBlocks.diamond_cobble_gen.get())
                 .add(ModBlocks.emerald_cobble_gen.get())
-            ;
-
-        this.tag(Tags.Blocks.NEEDS_NETHERITE_TOOL)
                 .add(ModBlocks.netherite_cobble_gen.get())
                 .add(ModBlocks.creative_cobble_gen.get())
             ;
