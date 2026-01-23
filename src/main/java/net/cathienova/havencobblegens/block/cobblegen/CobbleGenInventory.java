@@ -1,6 +1,5 @@
 package net.cathienova.havencobblegens.block.cobblegen;
 
-import net.cathienova.havencobblegens.config.HavenConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -12,10 +11,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -159,27 +156,15 @@ public class CobbleGenInventory {
         return Blocks.COBBLESTONE;
     }
 
-    public List<? extends String> getValidBlocks(Level level, BlockPos pos)
-    {
-        BlockEntity entity = level.getBlockEntity(pos);
+    public List<? extends String> getValidBlocks(Level level, BlockPos pos) {
+        if (level == null || pos == null) {
+            return List.of();
+        }
 
-        if (entity instanceof WoodenCobbleGenEntity)
-            return HavenConfig.wooden_cobble_gen_valid_blocks;
-        else if (entity instanceof StoneCobbleGenEntity)
-            return HavenConfig.stone_cobble_gen_valid_blocks;
-        else if (entity instanceof IronCobbleGenEntity)
-            return HavenConfig.iron_cobble_gen_valid_blocks;
-        else if (entity instanceof GoldCobbleGenEntity)
-            return HavenConfig.gold_cobble_gen_valid_blocks;
-        else if (entity instanceof DiamondCobbleGenEntity)
-            return HavenConfig.diamond_cobble_gen_valid_blocks;
-        else if (entity instanceof EmeraldCobbleGenEntity)
-            return HavenConfig.emerald_cobble_gen_valid_blocks;
-        else if (entity instanceof NetheriteCobbleGenEntity)
-            return HavenConfig.netherite_cobble_gen_valid_blocks;
-        else if (entity instanceof CreativeCobbleGenEntity)
-            return HavenConfig.creative_cobble_gen_valid_blocks;
-        else
-            return new ArrayList<>();
+        BlockEntity entity = level.getBlockEntity(pos);
+        if (entity instanceof ICobbleGenEntity cobbleGen) {
+            return cobbleGen.getValidBlocks();
+        }
+        return List.of();
     }
 }
