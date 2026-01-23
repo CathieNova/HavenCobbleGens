@@ -92,7 +92,10 @@ dependencies {
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
     // at runtime, use the full JEI jar for NeoForge
     //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    implementation "curse.maven:jade-324717:${jade_version}"
+    compileOnly "curse.maven:jade-324717:${jade_version}"
+    // runtimeOnly "curse.maven:jade-324717:${jade_version}"
+    compileOnly "curse.maven:the-one-probe-245211:${top_version}"
+    runtimeOnly "curse.maven:the-one-probe-245211:${top_version}"
     api "me.shedaniel.cloth:cloth-config-neoforge:15.0.140"
     api "me.shedaniel:RoughlyEnoughItems-neoforge:16.0.788"
     api "dev.architectury:architectury-neoforge:13.0.8"

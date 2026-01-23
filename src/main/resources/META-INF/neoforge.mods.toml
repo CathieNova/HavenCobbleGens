@@ -34,6 +34,13 @@ license="${mod_license}"
     side="BOTH"
 [[dependencies.havencobblegens]]
     modId="jade"
+    type="optional"
     versionRange="[11.7.0,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.havencobblegens]]
+    modId="theoneprobe"
+    type="optional"
+    versionRange="[1.21_neo-12.0.7,)"
     ordering="NONE"
     side="BOTH"
