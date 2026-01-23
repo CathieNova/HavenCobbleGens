@@ -1,9 +1,11 @@
 package net.cathienova.havencobblegens;
 
 import com.mojang.logging.LogUtils;
+import mcjty.theoneprobe.api.ITheOneProbe;
 import net.cathienova.havencobblegens.block.ModBlockEntities;
 import net.cathienova.havencobblegens.block.ModBlocks;
 import net.cathienova.havencobblegens.compat.REIHavenCobbleGenPlugin;
+import net.cathienova.havencobblegens.compat.top.CobbleGenTOPProvider;
 import net.cathienova.havencobblegens.config.CommonConfig;
 import net.cathienova.havencobblegens.item.*;
 import net.cathienova.havencobblegens.util.ModVillagers;
@@ -21,6 +23,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.apache.commons.lang3.tuple.Pair;
+
+import static mcjty.theoneprobe.TheOneProbe.theOneProbeImp;
 
 @Mod(HavenCobbleGens.MOD_ID)
 public class HavenCobbleGens
@@ -61,6 +65,11 @@ public class HavenCobbleGens
     {
         if (ModList.get().isLoaded("roughlyenoughitems"))
             REIHavenCobbleGenPlugin.populateItemDescriptions();
+            
+        if (ModList.get().isLoaded("theoneprobe")) {
+            ITheOneProbe oneProbe = theOneProbeImp;
+            oneProbe.registerProvider(new CobbleGenTOPProvider());
+        }
     }
 
     @SubscribeEvent
