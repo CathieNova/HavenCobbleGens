@@ -1,46 +1,46 @@
 modLoader="javafml"
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
+
 [[mods]]
-    modId="havencobblegens"
-    version="${mod_version}"
-    displayName="${mod_name}"
-    authors="${mod_authors}"
-    description='''${mod_description}'''
-    logoFile="logo.png"
-[[dependencies.havencobblegens]]
-    modId="neoforge"
-    type="required"
-    versionRange="${neo_version_range}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.havencobblegens]]
-    modId="minecraft"
-    type="required"
-    versionRange="${minecraft_version_range}"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.havencobblegens]]
-    modId="jei"
-    type="optional"
-    versionRange="[19.19,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.havencobblegens]]
-    modId="roughlyenoughitems"
-    type="optional"
-    versionRange="[16.0.788,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.havencobblegens]]
-    modId="jade"
-    type="optional"
-    versionRange="[11.7.0,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.havencobblegens]]
-    modId="theoneprobe"
-    type="optional"
-    versionRange="[1.21_neo-12.0.7,)"
-    ordering="NONE"
-    side="BOTH"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="${mod_authors}"
+description='''${mod_description}'''
+logoFile="logo.png"
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="jei"
+type="optional"
+versionRange="${jei_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="jade"
+type="optional"
+versionRange="${jade_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="roughlyenoughitems"
+type="optional"
+versionRange="${rei_version_range}"
+ordering="NONE"
+side="CLIENT"

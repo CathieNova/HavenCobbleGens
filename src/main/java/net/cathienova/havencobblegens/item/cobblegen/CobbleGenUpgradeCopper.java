@@ -6,9 +6,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
 
-public class CobbleGenUpgradeStone extends Item
+public class CobbleGenUpgradeCopper extends Item
 {
-    public CobbleGenUpgradeStone(Properties properties)
+    public CobbleGenUpgradeCopper(Properties properties)
     {
         super(properties);
     }
@@ -26,9 +26,9 @@ public class CobbleGenUpgradeStone extends Item
             return InteractionResult.PASS;
         }
 
-        if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() == ModBlocks.stone_cobble_gen.get()
+        if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() == ModBlocks.copper_cobble_gen.get()
                 && context.getLevel().getBlockEntity(context.getClickedPos()) instanceof CobbleGenEntity cobbleGen
-                && cobbleGen.upgradeTo(ModBlocks.copper_cobble_gen.get()))
+                && cobbleGen.upgradeTo(ModBlocks.iron_cobble_gen.get()))
         {
             context.getItemInHand().shrink(1);
             return InteractionResult.SUCCESS;

@@ -2,167 +2,179 @@ package net.cathienova.havencobblegens.block.cobblegen;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.IntSupplier;
 
-public class CobbleGenInventory {
-    private final ItemStackHandler inventory;
-    private final int stackSize;
+public class CobbleGenInventory
+{
+    private final IntSupplier stackSize;
+    private final ItemStacksResourceHandler inventory;
 
-    public static CobbleGenInventory createForTileEntity(int size, int stackSize) {
-        return new CobbleGenInventory(size, stackSize);
+    public static CobbleGenInventory createForTileEntity(int size, IntSupplier stackSize, Runnable changed)
+    {
+        return new CobbleGenInventory(size, stackSize, changed);
     }
 
-    private CobbleGenInventory(int size, int stackSize) {
-        this.inventory = new ItemStackHandler(size) {
+    private CobbleGenInventory(int size, IntSupplier stackSize, Runnable changed)
+    {
+        this.stackSize = stackSize;
+        this.inventory = new ItemStacksResourceHandler(size)
+        {
             @Override
-            public int getSlotLimit(int slot) {
-                return stackSize;
+            protected int getCapacity(int index, ItemResource resource)
+            {
+                return Math.min(stackSize.getAsInt(), super.getCapacity(index, resource));
             }
 
             @Override
-            public void setStackInSlot(int slot, ItemStack stack) {
-                if (stack.getCount() > stack.getMaxStackSize()) {
-                    stack.setCount(stack.getMaxStackSize());
-                }
-                super.setStackInSlot(slot, stack);
+            public int insert(int index, ItemResource resource, int amount, TransactionContext transaction)
+            {
+                return 0;
             }
 
             @Override
-            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-                if (stack.getCount() > stack.getMaxStackSize()) {
-                    stack.setCount(stack.getMaxStackSize());
-                }
-                return super.insertItem(slot, stack, simulate);
+            protected void onContentsChanged(int index, ItemStack previousContents)
+            {
+                changed.run();
             }
         };
-        this.stackSize = stackSize;
     }
 
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return inventory.serializeNBT(provider);
+    public void serialize(ValueOutput output)
+    {
+        inventory.serialize(output);
     }
 
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        inventory.deserializeNBT(provider, nbt);
+    public void deserialize(ValueInput input)
+    {
+        inventory.deserialize(input);
     }
 
-    public ItemStackHandler getHandler() {
-        return this.inventory;
+    public ResourceHandler<ItemResource> getHandler()
+    {
+        return inventory;
     }
 
-    public boolean canPlaceItem(int index, ItemStack stack) {
-        return inventory.isItemValid(index, stack);
+    public int getContainerSize()
+    {
+        return inventory.size();
     }
 
-    public int getContainerSize() {
-        return inventory.getSlots();
+    public ItemStack getItem(int index)
+    {
+        ItemResource resource = inventory.getResource(index);
+        return resource.isEmpty() ? ItemStack.EMPTY : resource.toStack(inventory.getAmountAsInt(index));
     }
 
-    public ItemStack getItem(int index) {
-        return inventory.getStackInSlot(index);
-    }
-
-    public boolean isEmpty() {
-        for (int i = 0; i < inventory.getSlots(); ++i) {
-            if (!inventory.getStackInSlot(i).isEmpty()) {
+    public boolean isEmpty()
+    {
+        for (int i = 0; i < inventory.size(); i++)
+        {
+            if (!inventory.getResource(i).isEmpty())
+            {
                 return false;
             }
         }
         return true;
     }
 
-    public ItemStack removeItem(int index, int count) {
-        return inventory.extractItem(index, count, false);
-    }
+    public ItemStack removeItem(int index, int count)
+    {
+        ItemResource resource = inventory.getResource(index);
+        if (resource.isEmpty())
+        {
+            return ItemStack.EMPTY;
+        }
 
-    public void setItem(int index, ItemStack stack) {
-        inventory.setStackInSlot(index, stack);
-    }
-
-    public ItemStack increaseStackSize(int index, ItemStack itemStackToInsert) {
-        ItemStack leftoverItemStack = inventory.insertItem(index, itemStackToInsert, false);
-        return leftoverItemStack;
-    }
-
-    public boolean doesItemStackFit(int index, ItemStack itemStackToInsert) {
-        ItemStack leftoverItemStack = inventory.insertItem(index, itemStackToInsert, true);
-        return leftoverItemStack.isEmpty();
-    }
-
-    public void dropInventory(Level world, BlockPos pos) {
-        for (int i = 0; i < this.getContainerSize(); ++i) {
-            ItemStack stack = removeItem(i, this.getMaxStackSize());
-            if (!stack.isEmpty()) {
-                world.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(world, pos.getX(), pos.getY() + 1, pos.getZ(), stack));
+        try (Transaction transaction = Transaction.openRoot())
+        {
+            int removed = inventory.extract(index, resource, count, transaction);
+            if (removed > 0)
+            {
+                transaction.commit();
+                return resource.toStack(removed);
             }
         }
+
+        return ItemStack.EMPTY;
     }
 
-    public int getMaxStackSize() {
-        return this.stackSize;
+    public void setItem(int index, ItemStack stack)
+    {
+        if (stack.isEmpty())
+        {
+            inventory.set(index, ItemResource.EMPTY, 0);
+            return;
+        }
+
+        int amount = Math.min(stack.getCount(), Math.min(stack.getMaxStackSize(), stackSize.getAsInt()));
+        inventory.set(index, ItemResource.of(stack), amount);
     }
 
-    public void clearContent() {
-        for (int i = 0; i < inventory.getSlots(); ++i) {
-            inventory.setStackInSlot(i, ItemStack.EMPTY);
+    public int getMaxStackSize()
+    {
+        return stackSize.getAsInt();
+    }
+
+    public void clearContent()
+    {
+        for (int i = 0; i < inventory.size(); i++)
+        {
+            inventory.set(i, ItemResource.EMPTY, 0);
         }
     }
 
-    public Block getBlockToGenerate(Level level, BlockPos pos) {
+    public Block getBlockToGenerate(Level level, BlockPos pos)
+    {
         List<? extends String> validBlocks = getValidBlocks(level, pos);
-        if (validBlocks.isEmpty()) {
+        if (validBlocks.isEmpty())
+        {
             return Blocks.COBBLESTONE;
         }
 
-        Random random = new Random();
-
-        // Loop through all six directions (up, down, north, south, east, west)
-        for (Direction direction : Direction.values()) {
-            assert level != null;
+        for (Direction direction : Direction.values())
+        {
             Block blockAtSide = level.getBlockState(pos.relative(direction)).getBlock();
             String blockAtSideName = BuiltInRegistries.BLOCK.getKey(blockAtSide).toString();
 
-            // Iterate over each config entry (formatted as blockToCheck;blockToGenerate1,blockToGenerate2,...)
-            for (String entry : validBlocks) {
-                String[] parts = entry.split(";");
-                if (parts.length == 2) {
-                    String blockToCheck = parts[0];  // The block to check on the side
-                    String[] blockToGenerateList = parts[1].split(",");  // Blocks to randomly choose from
-
-                    // If the blockAtSide matches blockToCheck, randomly select a block from blockToGenerateList
-                    if (blockAtSideName.equals(blockToCheck)) {
-                        String randomBlockToGenerate = blockToGenerateList[random.nextInt(blockToGenerateList.length)];
-                        Block generateBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(randomBlockToGenerate));
-                        if (generateBlock != null) {
-                            return generateBlock;
-                        }
-                    }
+            for (String entry : validBlocks)
+            {
+                String[] parts = entry.split(";", 2);
+                if (parts.length != 2 || !blockAtSideName.equals(parts[0]))
+                {
+                    continue;
                 }
+
+                String[] outputBlocks = parts[1].split(",");
+                String outputBlock = outputBlocks[ThreadLocalRandom.current().nextInt(outputBlocks.length)];
+                return BuiltInRegistries.BLOCK.getValue(Identifier.parse(outputBlock));
             }
         }
-        // Default to cobblestone if no match
+
         return Blocks.COBBLESTONE;
     }
 
-    public List<? extends String> getValidBlocks(Level level, BlockPos pos) {
-        if (level == null || pos == null) {
-            return List.of();
-        }
-
+    public List<? extends String> getValidBlocks(Level level, BlockPos pos)
+    {
         BlockEntity entity = level.getBlockEntity(pos);
-        if (entity instanceof ICobbleGenEntity cobbleGen) {
+        if (entity instanceof CobbleGenEntity cobbleGen)
+        {
             return cobbleGen.getValidBlocks();
         }
         return List.of();

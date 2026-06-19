@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '1.0.14'
+    id 'net.neoforged.moddev' version '2.0.141'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -16,15 +16,15 @@ group = mod_group_id
 repositories {
     mavenLocal()
     maven {
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-
-    maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
+    }
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+        content {
+            includeGroup "maven.modrinth"
+        }
     }
 
     maven { url "https://maven.architectury.dev/" }
@@ -32,18 +32,13 @@ repositories {
 }
 
 base {
-    archivesName = mod_name + "-NeoForge-" + minecraft_version
+    archivesName = mod_name + "-" + minecraft_version
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
     version = project.neo_version
-
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
 
     runs {
         client {
@@ -63,13 +58,15 @@ neoForge {
         }
 
         data {
-            data()
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+            clientData()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources').getAbsolutePath(), '--existing', file('src/main/resources').getAbsolutePath()
         }
 
         configureEach {
             systemProperty 'forge.logging.markers', 'REGISTRIES'
-
+            if (project.enable_rei_runtime.toBoolean()) {
+                systemProperty 'neoforge.warnings.onlyin.hide', 'true'
+            }
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
@@ -88,21 +85,21 @@ configurations {
 }
 
 dependencies {
-    // compile against the JEI API but do not include it at runtime
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    // at runtime, use the full JEI jar for NeoForge
-    //runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    compileOnly "curse.maven:jade-324717:${jade_version}"
-    // runtimeOnly "curse.maven:jade-324717:${jade_version}"
-    compileOnly "curse.maven:the-one-probe-245211:${top_version}"
-    runtimeOnly "curse.maven:the-one-probe-245211:${top_version}"
-    api "me.shedaniel.cloth:cloth-config-neoforge:15.0.140"
-    api "me.shedaniel:RoughlyEnoughItems-neoforge:16.0.788"
-    api "dev.architectury:architectury-neoforge:13.0.8"
+    compileOnly("maven.modrinth:jade:${jade_version}")
+    compileOnly("me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}")
 
-    // For testing modded storage
-    //implementation "curse.maven:titanium-287342:6337206"
-    //implementation "curse.maven:functional-storage-556861:6189752"
+    if (enable_jei_runtime.toBoolean()) {
+        localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    }
+
+    if (enable_jade_runtime.toBoolean()) {
+        localRuntime("maven.modrinth:jade:${jade_version}")
+    }
+
+    if (enable_rei_runtime.toBoolean()) {
+        localRuntime("me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}")
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -117,7 +114,10 @@ tasks.withType(ProcessResources).configureEach {
             mod_license            : mod_license,
             mod_version            : mod_version,
             mod_authors            : mod_authors,
-            mod_description        : mod_description
+            mod_description        : mod_description,
+            jei_version_range      : jei_version_range,
+            jade_version_range     : jade_version_range,
+            rei_version_range      : rei_version_range
     ]
     inputs.properties replaceProperties
 

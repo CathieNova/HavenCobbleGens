@@ -2,16 +2,18 @@ package net.cathienova.havencobblegens.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class CommonConfig {
+public class ServerConfig {
     public final ModConfigSpec.IntValue wooden_cobble_gen_speed;
     public final ModConfigSpec.IntValue wooden_cobble_gen_output;
     public final ModConfigSpec.ConfigValue<List<? extends String>> wooden_cobble_genValidBlocks;
     public final ModConfigSpec.IntValue stone_cobble_gen_speed;
     public final ModConfigSpec.IntValue stone_cobble_gen_output;
     public final ModConfigSpec.ConfigValue<List<? extends String>> stone_cobble_genValidBlocks;
+    public final ModConfigSpec.IntValue copper_cobble_gen_speed;
+    public final ModConfigSpec.IntValue copper_cobble_gen_output;
+    public final ModConfigSpec.ConfigValue<List<? extends String>> copper_cobble_genValidBlocks;
     public final ModConfigSpec.IntValue iron_cobble_gen_speed;
     public final ModConfigSpec.IntValue iron_cobble_gen_output;
     public final ModConfigSpec.ConfigValue<List<? extends String>> iron_cobble_genValidBlocks;
@@ -32,8 +34,8 @@ public class CommonConfig {
     public final ModConfigSpec.IntValue creative_cobble_gen_multiplier;
     public final ModConfigSpec.ConfigValue<List<? extends String>> creative_cobble_genValidBlocks;
 
-    public CommonConfig(ModConfigSpec.Builder builder) {
-        builder.comment("Wooden Cobblestone Generator").push("wooden_cobble_gen").build();
+    public ServerConfig(ModConfigSpec.Builder builder) {
+        builder.comment("Wooden Cobblestone Generator").push("wooden_cobble_gen");
         wooden_cobble_gen_speed = builder
                 .comment("Speed of the Wooden Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("wooden_cobble_gen_speed", 100, 1, Integer.MAX_VALUE);
@@ -57,10 +59,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Stone Cobblestone Generator").push("stone_cobble_gen").build();
+        builder.comment("Stone Cobblestone Generator").push("stone_cobble_gen");
         stone_cobble_gen_speed = builder
                 .comment("Speed of the Stone Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("stone_cobble_gen_speed", 80, 1, Integer.MAX_VALUE);
@@ -84,10 +87,39 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Iron Cobblestone Generator").push("iron_cobble_gen").build();
+        builder.comment("Copper Cobblestone Generator").push("copper_cobble_gen");
+        copper_cobble_gen_speed = builder
+                .comment("Speed of the Copper Cobblestone Generator (ticks per cobblestone)")
+                .defineInRange("copper_cobble_gen_speed", 70, 1, Integer.MAX_VALUE);
+        copper_cobble_gen_output = builder
+                .comment("The storage capacity of the Copper Cobblestone Generator")
+                .defineInRange("copper_cobble_gen_output", 24, 1, 64);
+        copper_cobble_genValidBlocks = builder
+                .comment("Valid blocks for cobblestone generators at any side. Format: \"checkforblock;outputblock\", it also supports multiple outputblock with comma, if it does not match any then it will return Cobblestone.")
+                .defineList("cobbleGenValidBlocks",
+                        List.of(
+                                "minecraft:stone;minecraft:stone,minecraft:cobblestone",
+                                "minecraft:cobblestone;minecraft:cobblestone",
+                                "minecraft:deepslate;minecraft:cobbled_deepslate",
+                                "minecraft:cobbled_deepslate;minecraft:cobbled_deepslate",
+                                "minecraft:tuff;minecraft:tuff",
+                                "minecraft:netherrack;minecraft:netherrack",
+                                "minecraft:basalt;minecraft:basalt",
+                                "minecraft:blackstone;minecraft:blackstone",
+                                "minecraft:andesite;minecraft:andesite",
+                                "minecraft:diorite;minecraft:diorite",
+                                "minecraft:granite;minecraft:granite",
+                                "minecraft:end_stone;minecraft:end_stone"
+                        ),
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
+        builder.pop();
+
+        builder.comment("Iron Cobblestone Generator").push("iron_cobble_gen");
         iron_cobble_gen_speed = builder
                 .comment("Speed of the Iron Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("iron_cobble_gen_speed", 60, 1, Integer.MAX_VALUE);
@@ -111,10 +143,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Gold Cobblestone Generator").push("gold_cobble_gen").build();
+        builder.comment("Gold Cobblestone Generator").push("gold_cobble_gen");
         gold_cobble_gen_speed = builder
                 .comment("Speed of the Gold Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("gold_cobble_gen_speed", 40, 1, Integer.MAX_VALUE);
@@ -138,10 +171,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Diamond Cobblestone Generator").push("diamond_cobble_gen").build();
+        builder.comment("Diamond Cobblestone Generator").push("diamond_cobble_gen");
         diamond_cobble_gen_speed = builder
                 .comment("Speed of the Diamond Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("diamond_cobble_gen_speed", 20, 1, Integer.MAX_VALUE);
@@ -165,10 +199,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Emerald Cobblestone Generator").push("emerald_cobble_gen").build();
+        builder.comment("Emerald Cobblestone Generator").push("emerald_cobble_gen");
         emerald_cobble_gen_speed = builder
                 .comment("Speed of the Emerald Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("emerald_cobble_gen_speed", 10, 1, Integer.MAX_VALUE);
@@ -192,10 +227,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Netherite Cobblestone Generator").push("netherite_cobble_gen").build();
+        builder.comment("Netherite Cobblestone Generator").push("netherite_cobble_gen");
         netherite_cobble_gen_speed = builder
                 .comment("Speed of the Netherite Cobblestone Generator (ticks per cobblestone)")
                 .defineInRange("netherite_cobble_gen_speed", 5, 1, Integer.MAX_VALUE);
@@ -219,10 +255,11 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
 
-        builder.comment("Creative Cobblestone Generator").push("creative_cobble_gen").build();
+        builder.comment("Creative Cobblestone Generator").push("creative_cobble_gen");
         creative_cobble_gen_speed = builder
                 .comment("Speed of the Creative Cobblestone Generator (ticks per 2 cobblestone)")
                 .defineInRange("creative_cobble_gen_speed", 1, 1, Integer.MAX_VALUE);
@@ -249,7 +286,8 @@ public class CommonConfig {
                                 "minecraft:granite;minecraft:granite",
                                 "minecraft:end_stone;minecraft:end_stone"
                         ),
-                        obj -> obj instanceof String && ((String) obj).contains(";"));
+                        () -> "minecraft:stone;minecraft:cobblestone",
+                        obj -> obj instanceof String value && value.contains(";"));
         builder.pop();
     }
 }

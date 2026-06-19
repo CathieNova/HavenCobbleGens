@@ -1,7 +1,7 @@
 package net.cathienova.havencobblegens.util;
 
 import net.cathienova.havencobblegens.HavenCobbleGens;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
@@ -16,7 +16,7 @@ public class ModTags
 
         private static TagKey<Block> tag(String name)
         {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
+            return BlockTags.create(Identifier.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
         }
     }
 
@@ -24,9 +24,10 @@ public class ModTags
     {
         public static final TagKey<Item> cobbleGens = tag("cobble_gens");
         public static final TagKey<Item> cobbleGenUpgrades = tag("cobble_gen_upgrades");
+
         private static TagKey<Item> tag(String name)
         {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
+            return ItemTags.create(Identifier.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, name));
         }
     }
 }

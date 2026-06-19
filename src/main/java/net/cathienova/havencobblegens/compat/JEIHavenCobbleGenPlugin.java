@@ -3,30 +3,37 @@ package net.cathienova.havencobblegens.compat;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.cathienova.havencobblegens.HavenCobbleGens;
 import net.cathienova.havencobblegens.block.ModBlocks;
+import net.cathienova.havencobblegens.compat.cobblegen.CobbleGenRecipe;
+import net.cathienova.havencobblegens.compat.jei.CobbleGenRecipeCategory;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
 
 @JeiPlugin
 public class JEIHavenCobbleGenPlugin implements IModPlugin
 {
+    public static final IRecipeType<CobbleGenRecipe> COBBLEGEN_TYPE =
+            IRecipeType.create(HavenCobbleGens.MOD_ID, "cobblegen", CobbleGenRecipe.class);
+
     @Override
-    public ResourceLocation getPluginUid()
+    public Identifier getPluginUid()
     {
-        return ResourceLocation.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, "jei_plugin");
+        return Identifier.fromNamespaceAndPath(HavenCobbleGens.MOD_ID, "jei_plugin");
     }
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration)
     {
-
+        registration.addRecipeCategories(new CobbleGenRecipeCategory(registration.getJeiHelpers()));
     }
-    
+
     @Override
     public void registerRecipes(IRecipeRegistration registration)
     {
@@ -41,6 +48,9 @@ public class JEIHavenCobbleGenPlugin implements IModPlugin
 
         ItemStack stone_cobble_gen = new ItemStack(ModBlocks.stone_cobble_gen.get());
         registration.addIngredientInfo(stone_cobble_gen, VanillaTypes.ITEM_STACK, cobble_gen_descriptions);
+
+        ItemStack copper_cobble_gen = new ItemStack(ModBlocks.copper_cobble_gen.get());
+        registration.addIngredientInfo(copper_cobble_gen, VanillaTypes.ITEM_STACK, cobble_gen_descriptions);
 
         ItemStack iron_cobble_gen = new ItemStack(ModBlocks.iron_cobble_gen.get());
         registration.addIngredientInfo(iron_cobble_gen, VanillaTypes.ITEM_STACK, cobble_gen_descriptions);
@@ -59,11 +69,11 @@ public class JEIHavenCobbleGenPlugin implements IModPlugin
 
         ItemStack creative_cobble_gen = new ItemStack(ModBlocks.creative_cobble_gen.get());
         registration.addIngredientInfo(creative_cobble_gen, VanillaTypes.ITEM_STACK, cobble_gen_descriptions);
-    }
 
-    @Override
-    public void registerGuiHandlers(IGuiHandlerRegistration registration)
-    {
-
+        List<CobbleGenRecipe> recipes = CobbleGenRecipe.createRecipes();
+        if (!recipes.isEmpty())
+        {
+            registration.addRecipes(COBBLEGEN_TYPE, recipes);
+        }
     }
 }
